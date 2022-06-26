@@ -1,7 +1,10 @@
 import express, { Express, Request, Response } from 'express';
 import axios from 'axios';
 
+var cors = require('cors')
+
 const app: Express = express();
+app.use(cors())
 const port = 9001;
 
 app.get('/', (req: Request, res: Response) => {
@@ -20,7 +23,7 @@ app.get('/data', (req: Request, res: Response) => {
     .get('http://piserver:8086/query', {
       params: {
         db: "telegraf",
-        q: "SELECT MEAN(\"temperature\")*9/5+32,MEAN(\"humidity\") FROM \"pi-sensors\" WHERE \"time\" > now() - 1d GROUP BY \"url\",time(1h)"
+        q: "SELECT MEAN(\"temperature\")*9/5+32,MEAN(\"humidity\") FROM \"pi-sensors\" WHERE \"time\" > now() - 2d GROUP BY \"url\",time(1h) FILL(0)"
       }
     })
     .then((response) => {
